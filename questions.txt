@@ -1,0 +1,20 @@
+Q1: Which of the following statements about Additive White Gaussian Noise (AWGN) are true? Mark all that apply.
+A. Noise power spectral density has a Gaussian Distribution, i.e., noise is highest at a mean frequency.(correct)
+B. Noise power spectral density is flat, i.e., it does not depend on frequency.
+C. Noise is added on to the signal of interest.
+---
+Q2: A sender transmits 1101 using a parity bit(i.e., XOR of the bits). A receiver decodes the bits as 1101 1. Which of the following statements is true?
+A. No errors are detected(correct)
+B. One error is detected, but cannot be corrected
+C. Two errors are detected, but cannot be corrected
+---
+Q3: Which of the following techniques can improve reliability at the link layer? Mark all that apply.
+A. CSMA - Sense the channel before transmitting(correct)
+B. Adding error correction
+C. Receiver sends acknowledgements, and retransmits the data if it fails
+---
+Q4: The role of the exponential back-off algorithm for MAC protocols is to do which of the following? Mark all that apply.
+A. Compute a time period during which a station is not allowed to attempt to reserve the medium(correct)
+B. Compute the range of addresses that node is allowed to use
+C. Compute the correct size of control packets
+---
