@@ -12,7 +12,7 @@ class Login extends JFrame implements ActionListener
 {
 
     static File file = new File("record.txt");
-    //private static int xLocation = 300;
+      private static int xLocation = 300;
     //private static int yLocation = 300;
 
     MySocket s = MySocket.getInstance();
