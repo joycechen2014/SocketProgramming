@@ -1,67 +1,50 @@
 import javax.swing.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Random;
 
-public class Record extends Thread {
-    private JFrame frame;
-    //private JLabel label;
-    private int xLocation;
-    private int yLocation;
-    static File file = new File("record.txt");
-
-    public Record(JFrame frame) {
-        this.frame = frame;
-        //this.label = label;
+class Record
+{
+    JFrame frame;
+    Record(JFrame f) {
+        frame = f;
     }
 
-    public void run() {
-        while (true) {
-            updateLocation();
-            writeRecord();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public void setLocation() {
+        try
+        {
+            MyThreadData.getThreadInstance().setData(new Random().nextInt());
+            FileInputStream fin=new FileInputStream("jf.dat");
+            ObjectInputStream oin=new ObjectInputStream(fin);
 
-    }
-    //读取横纵坐标
-    void getLocation() {
-        xLocation = frame.getX();
-        yLocation = frame.getY();
+            JFData jf=(JFData)oin.readObject();
+            frame.setLocation(jf.x,jf.y);
+            frame.setSize(jf.size);
 
+            oin.close();
+            fin.close();
+        }catch(Exception e){}
     }
 
-    //更新位置
-    void updateLocation() {
-        getLocation();
+    public void recordLocation() {
+        try
+        {
+
+            FileOutputStream fout=new FileOutputStream("jf.dat");
+            ObjectOutputStream out=new ObjectOutputStream(fout);
+
+            JFData jf=new JFData();
+            jf.x=frame.getLocation().x;
+            jf.y=frame.getLocation().y;
+            jf.size=frame.getSize();
+
+            out.writeObject(jf);
+
+            out.close();
+            fout.close();
+
+        }catch(Exception e){}
     }
-
-    //读入位置
-    void writeLocation() throws IOException {
-        FileInputStream fis  = new FileInputStream(file);
-        DataInputStream dis =new DataInputStream(fis);
-        xLocation = dis.readInt();
-        yLocation = dis.readInt();
-
-    }
-
-
-    //记录坐标到文件
-    void writeRecord() {
-        getLocation();
-        try {
-            FileOutputStream fos  = new FileOutputStream(file);
-            DataOutputStream dos =new DataOutputStream(fos);
-            System.out.println("Write X in Record: " + frame.getX());
-            System.out.println("Write Y in Record: " + frame.getY());
-            dos.writeInt(xLocation);
-            dos.writeInt(yLocation);
-            dos.flush();
-        }
-         catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

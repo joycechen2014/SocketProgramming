@@ -42,7 +42,7 @@ public class MySocket {
         this.s = s;
     }
 
-    private MySocket() throws IOException {
+    MySocket() throws IOException {
         InetAddress ip = InetAddress.getLocalHost();
         int port = 2525;
         // Scanner scanner = new Scanner(System.in);

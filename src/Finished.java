@@ -64,12 +64,12 @@ public class Finished extends JDialog {
         Socket s =  MySocket.getInstance().getS();
         DataOutputStream dos = new DataOutputStream(s.getOutputStream());
         dos.writeUTF("OK");
-        dispose();
+        System.exit(0);
     }
 
     private void onCancel() {
         // add your code here if necessary
-        dispose();
+        System.exit(0);
     }
 
     //从文件读取坐标信息

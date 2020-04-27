@@ -2,15 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class QuestionWin extends JFrame {
-    static File file = new File("record.txt");
-    private static int xLocation ;
-    private static int yLocation ;
+
      String saveValue = null;
     private RadioButtonListener radioButtonListener=new RadioButtonListener();
     private static Socket s = null;
@@ -24,8 +24,9 @@ public class QuestionWin extends JFrame {
     private JPanel myPanel;
     private JLabel title;
     JFrame frame = new JFrame("Question");
+    Record myRecord = new Record(frame);
     QuestionWin(String text) throws IOException {
-
+        frame.setContentPane(myPanel);
         s = MySocket.getInstance().getS();
 
         dis = new DataInputStream(s.getInputStream());
@@ -41,9 +42,7 @@ public class QuestionWin extends JFrame {
         radioButton3.setText(options[3]);
         radioButton3.addActionListener(radioButtonListener);
         frame.setPreferredSize(new Dimension(800, 300));
-        getlocation();
-        System.out.println("get X location " + xLocation);
-        System.out.println("get Y location " + yLocation);
+
         //frame.setLocation(xLocation,yLocation);
         int windowWidth = frame.getWidth();
         int windowHeight = frame.getHeight();
@@ -51,19 +50,41 @@ public class QuestionWin extends JFrame {
         Dimension screenSize = kit.getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
-        //frame.setLocation(300,300);
-        frame.setLocation(screenWidth / 2 - windowWidth / 2, screenHeight / 2 - windowHeight / 2);
+        myRecord.setLocation();
+        //frame.setLocation(screenWidth / 2 - 800 / 2, screenHeight / 2 - 300 / 2);
 
-        System.out.println("repeate X : " +frame.getX());
-        System.out.println("repeate Y : " +frame.getY());
-        frame.setContentPane(myPanel);
+
         frame.setDefaultCloseOperation((JFrame.EXIT_ON_CLOSE));
-//        Listener listener = new Listener(frame);
-//        frame.addComponentListener(listener);
-//        frame.addWindowListener(listener);
+
         frame.pack();
         frame.setVisible(true);
+        frame.addComponentListener(new ComponentAdapter(){
+            public void componentMoved(ComponentEvent ce)
+            {
 
+                try
+                {
+
+                    FileOutputStream fout=new FileOutputStream("jf.dat");
+                    ObjectOutputStream out=new ObjectOutputStream(fout);
+
+                    JFData jf=new JFData();
+
+                    jf.x=frame.getLocation().x;
+                    jf.y=frame.getLocation().y;
+                    jf.size=frame.getSize();
+                    System.out.println("x move: " + jf.x);
+                    System.out.println("Y move:" + jf.y);
+                    out.writeObject(jf);
+
+                    out.close();
+                    fout.close();
+
+                }catch(Exception e){}
+
+            }
+
+        });
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,11 +92,10 @@ public class QuestionWin extends JFrame {
                 try {
                     dos.writeUTF(question[0] + ":" + saveValue);
                     String response = dis.readUTF();
-                    //System.out.println(response);
                     if(!response.contains("-1")) {
-                        QuestionWin page=new QuestionWin(response);
+                        //frame.pack();
                         frame.dispose();
-                        frame.pack();
+                        QuestionWin page=new QuestionWin(response);
                         //page.setVisible(true);
                     } else {
                         Finished finish = new Finished();
@@ -103,21 +123,6 @@ public class QuestionWin extends JFrame {
         }
 
     }
-    //从文件读取坐标信息
-    private static void getlocation() {
-        if(file.length() == 0) return;
-        try{
-            FileInputStream fis  = new FileInputStream(file);
-            DataInputStream dis =new DataInputStream(fis);
-            xLocation = dis.readInt();
-            yLocation = dis.readInt();
-            System.out.println("xLocationL----------------: " + xLocation);
-            System.out.println("yLocation----------------: " + yLocation);
-        }
 
-        catch (IOException e) {
-            e.printStackTrace();
-        }
 
-    }
 }

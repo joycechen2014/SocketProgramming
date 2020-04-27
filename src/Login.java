@@ -11,10 +11,6 @@ import java.io.IOException;
 class Login extends JFrame implements ActionListener
 {
 
-    static File file = new File("record.txt");
-      private static int xLocation = 300;
-    //private static int yLocation = 300;
-
     MySocket s = MySocket.getInstance();
     private JButton SUBMIT;
     private JButton CANCEL;
@@ -44,15 +40,12 @@ class Login extends JFrame implements ActionListener
         panel.add(CANCEL);
         add(panel,BorderLayout.CENTER);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        Listener listener = new Listener(this);
-//       // addComponentListener(listener);
-//        addWindowListener(listener);
         setVisible(true);
         SUBMIT.addActionListener(this);
         CANCEL.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
+                System.exit(0);
             }
         });
 
@@ -66,7 +59,6 @@ class Login extends JFrame implements ActionListener
             try {
                 s.getDos().writeUTF(value1 + "#"+ value2);
                 String response = s.getDis().readUTF();
-                //System.out.println(response);
                 App page=new App(response);
                 dispose();
                 page.pack();
@@ -96,8 +88,6 @@ class Login extends JFrame implements ActionListener
             int screenWidth = screenSize.width;
             int screenHeight = screenSize.height;
             frame.setLocation(screenWidth / 2 - windowWidth / 2, screenHeight / 2 - windowHeight / 2);
-            System.out.println("x in Login :" + (screenWidth / 2 - windowWidth / 2));
-            System.out.println("y in login : " + (screenHeight / 2 - windowHeight / 2));
         }
         catch(Exception e)
         {JOptionPane.showMessageDialog(null, e.getMessage());}

@@ -18,3 +18,13 @@ A. Compute a time period during which a station is not allowed to attempt to res
 B. Compute the range of addresses that node is allowed to use
 C. Compute the correct size of control packets
 ---
+Q5: Which of the following techniques can improve reliability at the link layer? Mark all that apply.
+A. CSMA - Sense the channel before transmitting(correct)
+B. Adding error correction
+C. Receiver sends acknowledgements, and retransmits the data if it fails
+---
+Q6: The role of the exponential back-off algorithm for MAC protocols is to do which of the following? Mark all that apply.
+A. Compute a time period during which a station is not allowed to attempt to reserve the medium(correct)
+B. Compute the range of addresses that node is allowed to use
+C. Compute the correct size of control packets
+---
