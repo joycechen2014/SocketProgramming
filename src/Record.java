@@ -8,15 +8,18 @@ import java.util.Random;
 class Record
 {
     JFrame frame;
-    Record(JFrame f) {
+    String file;
+    Record(JFrame f,String name) {
         frame = f;
+        file = name;
+
     }
 
     public void setLocation() {
         try
         {
-            MyThreadData.getThreadInstance().setData(new Random().nextInt());
-            FileInputStream fin=new FileInputStream("jf.dat");
+            String file_name = file + ".dat";
+            FileInputStream fin=new FileInputStream(file_name);
             ObjectInputStream oin=new ObjectInputStream(fin);
 
             JFData jf=(JFData)oin.readObject();

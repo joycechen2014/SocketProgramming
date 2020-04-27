@@ -2,10 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 class Login extends JFrame implements ActionListener
@@ -59,7 +55,7 @@ class Login extends JFrame implements ActionListener
             try {
                 s.getDos().writeUTF(value1 + "#"+ value2);
                 String response = s.getDis().readUTF();
-                App page=new App(response);
+                App page=new App(response,value1);
                 dispose();
                 page.pack();
             } catch (IOException e) {

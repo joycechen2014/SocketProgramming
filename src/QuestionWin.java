@@ -23,9 +23,11 @@ public class QuestionWin extends JFrame {
 
     private JPanel myPanel;
     private JLabel title;
-    JFrame frame = new JFrame("Question");
-    Record myRecord = new Record(frame);
-    QuestionWin(String text) throws IOException {
+    JFrame frame;
+    Record myRecord;
+    QuestionWin(String text,String name) throws IOException {
+        frame = new JFrame(name + "'s questions");
+        myRecord = new Record(frame,name);
         frame.setContentPane(myPanel);
         s = MySocket.getInstance().getS();
 
@@ -64,8 +66,9 @@ public class QuestionWin extends JFrame {
 
                 try
                 {
+                    String file_name = name + ".dat";
 
-                    FileOutputStream fout=new FileOutputStream("jf.dat");
+                    FileOutputStream fout=new FileOutputStream(file_name);
                     ObjectOutputStream out=new ObjectOutputStream(fout);
 
                     JFData jf=new JFData();
@@ -73,8 +76,6 @@ public class QuestionWin extends JFrame {
                     jf.x=frame.getLocation().x;
                     jf.y=frame.getLocation().y;
                     jf.size=frame.getSize();
-                    System.out.println("x move: " + jf.x);
-                    System.out.println("Y move:" + jf.y);
                     out.writeObject(jf);
 
                     out.close();
@@ -95,7 +96,7 @@ public class QuestionWin extends JFrame {
                     if(!response.contains("-1")) {
                         //frame.pack();
                         frame.dispose();
-                        QuestionWin page=new QuestionWin(response);
+                        QuestionWin page=new QuestionWin(response,name);
                         //page.setVisible(true);
                     } else {
                         Finished finish = new Finished();

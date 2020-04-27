@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class App extends JFrame{
-
+    private static Map<Thread,Integer> dataMap = new HashMap<Thread,Integer>();
     private static Socket s = null;
     private  DataInputStream dis = null;
     private  DataOutputStream dos = null;
@@ -24,8 +24,9 @@ public class App extends JFrame{
     private JLabel lable;
 
     JFrame frame = new JFrame("App");
-    Record myRecord = new Record(frame);
-    public  App(String text) throws IOException {
+    Record myRecord;
+    public  App(String text,String name) throws IOException {
+        myRecord = new Record(frame,name);
             s = MySocket.getInstance().getS();
             dis = new DataInputStream(s.getInputStream());
             dos = new DataOutputStream(s.getOutputStream());
@@ -50,8 +51,9 @@ public class App extends JFrame{
 
                 try
                 {
+                    String file_name = name + ".dat";
 
-                    FileOutputStream fout=new FileOutputStream("jf.dat");
+                    FileOutputStream fout=new FileOutputStream(file_name);
                     ObjectOutputStream out=new ObjectOutputStream(fout);
 
                     JFData jf=new JFData();
@@ -59,8 +61,6 @@ public class App extends JFrame{
                     jf.x=frame.getLocation().x;
                     jf.y=frame.getLocation().y;
                     jf.size=frame.getSize();
-                    System.out.println("x move: " + jf.x);
-                    System.out.println("Y move:" + jf.y);
                     out.writeObject(jf);
 
                     out.close();
@@ -79,7 +79,7 @@ public class App extends JFrame{
                     dos.writeUTF( "-1");
                     String response = dis.readUTF();
                     //System.out.println(response);
-                    QuestionWin page=new QuestionWin(response);
+                    QuestionWin page=new QuestionWin(response,name);
                     page.pack();
                     frame.dispose();
 
