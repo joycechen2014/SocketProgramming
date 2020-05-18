@@ -1,3 +1,5 @@
+import sun.jvm.hotspot.runtime.Threads;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,6 +28,8 @@ public class ServerGUI extends JFrame{
     private JTextArea textArea1;
     private JScrollPane myScroll;
 
+    private JButton uploadButton;
+    final JFileChooser  fileDialog = new JFileChooser();
     JFrame frame = new JFrame("Server");
     ServerGUI() {
         frame.setContentPane(myPanel);
@@ -38,6 +42,50 @@ public class ServerGUI extends JFrame{
         frame.setLocation(screenWidth / 2 - 400 / 2, screenHeight / 2 - 300 / 2);
         frame.pack();
         frame.setVisible(true);
+        uploadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int returnVal = fileDialog.showOpenDialog(frame);
+
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    java.io.File file = fileDialog.getSelectedFile();
+                    textArea1.setText(textArea1.getText() + "File Selected " + file.getName());
+                    try{
+                        /* Read questions and answers from file*/
+                        textArea1.setText("Uploading the file start" +"\n");
+                        //Always scroll down
+                        textArea1.setCaretPosition(textArea1.getText().length());
+                        BufferedReader br = new BufferedReader(new FileReader(file));
+                        String row = br.readLine();
+                        while (row != null && !row.isEmpty()) {
+                            String question = "";
+                            int correctAns = -1;
+                            for (int i = 0; i < 4; i++) {
+                                if (row.contains("(correct)")) {
+                                    row = row.substring(0, row.length() - 10);
+                                    correctAns = i - 1;
+                                }
+                                question += row + "\n";
+                                row = br.readLine();
+                            }
+                            ques.add(question);
+                            ans .add(correctAns);
+                            if (row.equalsIgnoreCase("---")) {
+                                row = br.readLine();
+                                continue;
+                            }
+                        }
+                        textArea1.setText(textArea1.getText() + "Uploading the file finished!\n\n");
+                        textArea1.setCaretPosition(textArea1.getText().length());
+                    }catch(Exception se) {
+                        se.printStackTrace();
+                    }
+                } else {
+                    textArea1.setText("Open command cancelled by user." );
+                }
+            }
+        });
+
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -52,36 +100,8 @@ public class ServerGUI extends JFrame{
         try
         {
             frame=new ServerGUI();
-            frame.textArea1.setText("Uploading the file start" +"\n");
-            //Always scroll down
-            frame.textArea1.setCaretPosition(frame.textArea1.getText().length());
-
-            /* Read questions and answers from file*/
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String row = br.readLine();
-            while (row != null && !row.isEmpty()) {
-                String question = "";
-                int correctAns = -1;
-                for (int i = 0; i < 4; i++) {
-                    if (row.contains("(correct)")) {
-                        row = row.substring(0, row.length() - 10);
-                        correctAns = i - 1;
-                    }
-                    question += row + "\n";
-                    row = br.readLine();
-                }
-                ques.add(question);
-                ans .add(correctAns);
-                if (row.equalsIgnoreCase("---")) {
-                    row = br.readLine();
-                    continue;
-                }
-            }
-            frame.textArea1.setText(frame.textArea1.getText() + "Uploading the file finished!\n\n");
-            frame.textArea1.setCaretPosition(frame.textArea1.getText().length());
-
-            // Server is listening on 8888
-            ServerSocket ss = new ServerSocket(2525);
+            // Server is listening on 3000
+            ServerSocket ss = new ServerSocket(1234);
             // For client
             Socket s ;
             // Accept request from client
@@ -93,11 +113,9 @@ public class ServerGUI extends JFrame{
                 DataInputStream dis = new DataInputStream(s.getInputStream());
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
                 System.out.println("Creating a new handler for client...");
-                //frame.textArea1.setText(frame.textArea1.getText() + "Creating a new handler for client...\n");
                 ServerGUI.ClientHandler client = new ServerGUI.ClientHandler(s, dis,dos,frame);
                 Thread thread = new Thread(client);
                 System.out.println("Adding this client to active client list");
-                //frame.textArea1.setText(frame.textArea1.getText() + "Adding this client to active client list\n");
                 ls.add(client);
                 thread.start();
                 i++;
@@ -114,7 +132,7 @@ public class ServerGUI extends JFrame{
         }
     }
 
-    public static class ClientHandler implements Runnable {
+    public static class ClientHandler extends Thread {
 
         private String name;
         private int score;
@@ -135,7 +153,6 @@ public class ServerGUI extends JFrame{
         @Override
         public void run() {
             String received;
-
             while (true) {
                 try {
                     received = dis.readUTF();

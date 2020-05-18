@@ -2,9 +2,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 
 public class MySocket {
-    private java.net.Socket s = null;
+    private Socket s = null;
     private DataInputStream dis = null;
     private static MySocket instance;
 
@@ -44,11 +45,8 @@ public class MySocket {
 
     MySocket() throws IOException {
         InetAddress ip = InetAddress.getLocalHost();
-        int port = 2525;
-        // Scanner scanner = new Scanner(System.in);
-
+        int port = 1234;
         s = new java.net.Socket(ip, port);
-
         dis = new DataInputStream(s.getInputStream());
         dos = new DataOutputStream(s.getOutputStream());
     }
