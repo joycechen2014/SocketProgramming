@@ -100,22 +100,22 @@ public class ServerGUI extends JFrame{
         try
         {
             frame=new ServerGUI();
-            // Server is listening on 3000
+            // Server is listening on 1234
             ServerSocket ss = new ServerSocket(1234);
             // For client
             Socket s ;
-            // Accept request from client
+         
             while (true) {
                 s = ss.accept();
-                frame.textArea1.setText(frame.textArea1.getText() + "New client received\n\n");
-                System.out.println("New client request received : " +  s);
+                frame.textArea1.setText(frame.textArea1.getText() + "New Student Connected\n\n");
+                System.out.println("New student connected  : " +  s);
                 // obtain input and output streams
                 DataInputStream dis = new DataInputStream(s.getInputStream());
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-                System.out.println("Creating a new handler for client...");
+
                 ServerGUI.ClientHandler client = new ServerGUI.ClientHandler(s, dis,dos,frame);
                 Thread thread = new Thread(client);
-                System.out.println("Adding this client to active client list");
+
                 ls.add(client);
                 thread.start();
                 i++;
